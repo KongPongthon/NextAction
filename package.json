@@ -16,7 +16,7 @@
     "db:reset": "pnpm prisma migrate reset",
     "db:status": "pnpm prisma migrate status",
     "db:studio": "pnpm prisma studio",
-    "db:dev": "pnpm prisma generate && pnpm prisma migrate dev",
+    "db:dev": "npx prisma generate && pnpm prisma migrate dev",
     "db:check": "pnpm prisma migrate status && pnpm prisma generate"
   },
   "dependencies": {
