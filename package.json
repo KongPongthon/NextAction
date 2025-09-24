@@ -3,10 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "pnpm db:dev && next dev --turbopack",
+    "build": "pnpm prisma generate && next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "start:prod": "pnpm db:migrate:prod && next start",
+    "lint": "eslint",
+    "db:generate": "pnpm prisma generate",
+    "db:migrate": "pnpm prisma migrate dev",
+    "db:migrate:prod": "pnpm prisma migrate deploy",
+    "db:push": "pnpm prisma db push",
+    "db:seed": "pnpm prisma db seed",
+    "db:reset": "pnpm prisma migrate reset",
+    "db:status": "pnpm prisma migrate status",
+    "db:studio": "pnpm prisma studio",
+    "db:dev": "pnpm prisma generate && pnpm prisma migrate dev",
+    "db:check": "pnpm prisma migrate status && pnpm prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
