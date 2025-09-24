@@ -2,7 +2,6 @@
 
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,19 +13,12 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { loginAction } from '../action/login';
-
-const loginSchema = z.object({
-  email: z.string().email({ message: 'กรุณากรอกอีเมลให้ถูกต้อง' }),
-  password: z
-    .string()
-    .min(6, { message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' }),
-});
-
-type LoginSchema = z.infer<typeof loginSchema>;
+import { loginSchema, LoginSchema } from '@/schema/login';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -43,15 +35,18 @@ export default function LoginPage() {
   const onSubmit = (values: LoginSchema) => {
     startTransition(async () => {
       const formData = new FormData();
+      console.log(values);
+
       formData.append('email', values.email);
       formData.append('password', values.password);
 
       const res = await loginAction(formData);
+      console.log(res);
 
       if (!res.success) {
         setError('password', { message: res.error });
       } else {
-        alert('✅ Login success!');
+        router.push('/admin/dashboard');
       }
     });
   };

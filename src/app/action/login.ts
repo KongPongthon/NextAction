@@ -1,22 +1,17 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { z } from 'zod';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client/extension';
 import bcrypt from 'bcrypt';
+import { Prisma } from '@/lib/prisna';
+import { loginSchema } from '@/schema/login';
 const SECRET_KEY = process.env.JWT_SECRET_KEY as string;
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
 
 export async function loginAction(formData: FormData) {
   try {
     const data = Object.fromEntries(formData);
     const parsed = loginSchema.safeParse(data);
-    const prisma = new PrismaClient();
+    console.log('Test parsed', parsed);
 
     if (!parsed.success) {
       return { success: false, error: 'Invalid input' };
@@ -29,9 +24,9 @@ export async function loginAction(formData: FormData) {
     //     return { success: true };
     //   }
 
-    const user = await prisma.user.findUnique({
+    const user = await Prisma.user.findFirst({
       where: {
-        email,
+        email: email.toLowerCase(),
       },
     });
 
@@ -44,6 +39,7 @@ export async function loginAction(formData: FormData) {
     if (!isValid) {
       return { success: false, error: 'Invalid credentials' };
     }
+    console.log('Test', user, isValid);
 
     const cookiesPromise = cookies();
     const getcookies = await cookiesPromise;
@@ -58,6 +54,7 @@ export async function loginAction(formData: FormData) {
       path: '/',
       maxAge: 60 * 60,
     });
+    console.log('token', token);
 
     return { success: true };
   } catch (e) {

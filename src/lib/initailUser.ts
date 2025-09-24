@@ -1,12 +1,13 @@
 import bcrypt from 'bcrypt';
+import { Prisma } from './prisna';
 
 export async function ensureDefaultUser() {
   const email = 'admin@gmail.com';
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const existing = await Prisma.user.findUnique({ where: { email } });
 
   if (!existing) {
     const hashed = await bcrypt.hash('a', 10);
-    await prisma.user.create({
+    await Prisma.user.create({
       data: { email, password: hashed },
     });
     console.log(`✅ Created default user: ${email}`);
