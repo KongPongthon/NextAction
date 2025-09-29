@@ -34,16 +34,16 @@ const LineWeighing = () => {
       name: 'น้ำหนักออก',
     },
     {
-      key: 'netWeight',
-      name: 'น้ำหนักสุทธิ',
-    },
-    {
       key: 'deductWeight',
       name: 'หักน้ำหนัก',
     },
     {
+      key: 'netWeight',
+      name: 'น้ำหนักสุทธิ',
+    },
+    {
       key: 'averagePrice',
-      name: 'ราคาเฉลี่ย / หน่วย',
+      name: 'ราคาเฉลี่ย / กิโลกรัม',
     },
     {
       key: 'totalMoney',
@@ -60,11 +60,11 @@ const LineWeighing = () => {
       _id: '1',
       lineType: 'เข้า',
       inputWeight: 5000,
-      weightOut: 4960,
-      netWeight: 4960,
+      weightOut: 1500,
+      netWeight: 3460,
       deductWeight: 40,
-      totalMoney: 9920,
       averagePrice: 2,
+      totalMoney: 6920,
     },
   ];
   return (

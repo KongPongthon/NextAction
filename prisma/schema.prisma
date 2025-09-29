@@ -43,7 +43,6 @@ model DetailUser {
   id String @id @default(uuid())
 
   userId    String?
-  prefix    Prefix
   firstName String
   lastName  String
   phone     String
@@ -55,31 +54,28 @@ model DetailUser {
   User        User?  @relation(fields: [userId], references: [id])
   role        Role
 
-  Customer    Customer[]
+  Customer        Customer[]
   CustomerHistory CustomerHistory[]
 
-  LineWeighing LineWeighing[]
+  LineWeighing        LineWeighing[]
   LineWeighingHistory LineWeighingHistory[]
 }
 
-
 model Customer {
-  id String @id @default(uuid())
-  codeNumber Int
-  perfix String
-  firstName String
-  lastName String
-  cardId Int
-  phone Int
+  id              String  @id @default(uuid())
+  codeNumber      Int
+  firstName       String
+  lastName        String
+  cardId          Int
+  phone           Int
   carRegistration String
-  status IStatus
+  status          IStatus
 
   // Relations
-  User        DetailUser?  @relation(fields: [createdBy], references: [id])
-  createdBy   String[]
+  User            DetailUser?       @relation(fields: [createdBy], references: [id])
+  createdBy       String
   CustomerHistory CustomerHistory[]
 }
-
 
 model CustomerHistory {
   id         String   @id @default(uuid())
@@ -89,45 +85,46 @@ model CustomerHistory {
   updatedBy     String
   updatedByUser DetailUser @relation(fields: [updatedBy], references: [id])
 
-  fieldName     String
-  oldValue      String?
-  newValue      String?
-  updatedAt     DateTime @default(now())
+  fieldName String
+  oldValue  String?
+  newValue  String?
+  updatedAt DateTime @default(now())
 }
+
 enum Line {
   In
   Out
 }
 
 model LineWeighing {
-  id String @id @default(uuid())
+  id           String @id @default(uuid())
   listWeighing String
-  inputWeight Float
-  weightOut Float
-  netWeight Float
+  inputWeight  Float
+  weightOut    Float
+  netWeight    Float
   deductWeight Float
-  money Float
-  deductMoney Float
-  totalMoney Float
+  money        Float
+  deductMoney  Float
+  totalMoney   Float
   averagePrice Float
-  lineType Line
+  lineType     Line
 
   // Relations
-  User DetailUser?  @relation(fields: [createdBy], references: [id])
+  User      DetailUser?           @relation(fields: [createdBy], references: [id])
   createdBy String
   histories LineWeighingHistory[]
 }
 
 model LineWeighingHistory {
-  id            String   @id @default(uuid())
+  id             String       @id @default(uuid())
   lineWeighingId String
   lineWeighing   LineWeighing @relation(fields: [lineWeighingId], references: [id])
 
   updatedBy     String
   updatedByUser DetailUser @relation(fields: [updatedBy], references: [id])
 
-  fieldName     String
-  oldValue      String?
-  newValue      String?
-  updatedAt     DateTime @default(now())
+  fieldName String
+  oldValue  String?
+  newValue  String?
+  updatedAt DateTime @default(now())
 }

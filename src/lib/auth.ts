@@ -1,52 +1,64 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Prisma } from './prisna';
+import { ServiceError } from './ServiceErrors';
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY || 'defaultsecret';
-const REFRESH_THRESHOLD = 5 * 60;
+const SECRET_KEY = process.env.JWT_SECRET_KEY ?? 'defaultsecret';
+const REFRESH_THRESHOLD = 5 * 60; // 5 นาที
 
-export class AuthService {
-  async requireAuth() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('token')?.value;
+// เรานิยาม payload ของเราเอง
+interface AppJwtPayload extends JwtPayload {
+  id: string;
+  email: string;
+}
 
-    if (!token) throw new Error('Unauthorized');
+export async function verifyToken() {
+  const getToken = await cookies();
+  const token = getToken.get('token')?.value;
 
-    try {
-      const decoded: any = jwt.verify(token, SECRET_KEY, {
-        ignoreExpiration: true,
-      });
-      const now = Math.floor(Date.now() / 1000);
-      const timeLeft = decoded.exp - now;
+  if (!token) {
+    throw new ServiceError(401, 'Token not found');
+  }
+  const decoded = jwt.verify(token, SECRET_KEY) as AppJwtPayload;
 
-      if (timeLeft <= 0) throw new Error('Token expired');
+  if (!decoded.exp) {
+    throw new ServiceError(401, 'Token has no expiration');
+  }
+  const now = Math.floor(Date.now() / 1000); // ปัจจุบัน (วินาที)
+  const timeLeft = decoded.exp - now;
+  console.log('timeLeft', timeLeft, 'REFRESH_THRESHOLD', REFRESH_THRESHOLD);
 
-      if (timeLeft < REFRESH_THRESHOLD) {
-        const newToken = jwt.sign(
-          { id: decoded.id, email: decoded.email },
-          SECRET_KEY,
-          { expiresIn: '1h' }
-        );
-        cookieStore.set('token', newToken, {
-          httpOnly: true,
-          path: '/',
-          maxAge: 60 * 60,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-        });
+  if (timeLeft < REFRESH_THRESHOLD) {
+    const token = jwt.sign(
+      { email: decoded.email, role: 'admin' },
+      SECRET_KEY,
+      {
+        expiresIn: REFRESH_THRESHOLD,
       }
+    );
 
-      return decoded;
-    } catch {
-      throw new Error('Invalid token');
-    }
+    getToken.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60,
+    });
+  }
+  const user = await Prisma.user.findUnique({
+    where: {
+      email: decoded.email,
+    },
+    include: {
+      detailUser: true,
+    },
+  });
+
+  if (!user) {
+    throw new ServiceError(404, 'User not found');
   }
 
-  async logout() {
-    const cookieStore = await cookies();
-    cookieStore.set('token', '', { maxAge: -1, path: '/' });
-  }
-
-  // คุณอาจใส่ login() หรือ refreshToken() ไว้ตรงนี้ก็ได้
+  return user.detailUser[0].id as string;
 }

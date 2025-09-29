@@ -6,6 +6,8 @@ import Paper from '@/components/Paper';
 import { useSetQuery } from '@/hook/useSetQuery';
 import type { ICustomerTable } from '@/types/customer.types';
 import { useSearchParams } from 'next/navigation';
+import React from 'react';
+import Dialog from '../_dialog/addDialog';
 
 const Customer = () => {
   const setQuery = useSetQuery();
@@ -20,6 +22,8 @@ const Customer = () => {
   const onRowsPerPageChange = (nextLimit: number) => {
     setQuery({ limit: nextLimit, page: page }, { replace: true });
   };
+
+  const [openDialog, setOpenDialog] = React.useState(false);
   const columns: TableColumn<ICustomerTable>[] = [
     {
       key: 'codeNumber',
@@ -52,6 +56,8 @@ const Customer = () => {
       carRegistration: 'FG1545',
     },
   ];
+
+  const openAddDialog = () => setOpenDialog(!openDialog);
   return (
     <div>
       <HeaderTitleContainer>
@@ -59,7 +65,7 @@ const Customer = () => {
         <div className='md:flex justify-end py-3'>
           <CustomButton
             className='w-full md:max-w-[50px]'
-            // onClick={openAddDialog}
+            onClick={openAddDialog}
           >
             +ADD
           </CustomButton>
@@ -76,8 +82,8 @@ const Customer = () => {
           actions={[]}
         />
       </Paper>
-      {/* <Dialog open={isOpenAdd} onClose={openAddDialog} />
-      <DialogEdit open={isOpenEdit} onClose={openEditDialog} data='' /> */}
+      <Dialog open={openDialog} onClose={openAddDialog} />
+      {/* <DialogEdit open={isOpenEdit} onClose={openEditDialog} data='' /> */}
     </div>
   );
 };

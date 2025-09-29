@@ -2,13 +2,13 @@
 export interface ILineWeighing {
   _id: string;
   lineType: string;
-  listWeighing: string;
+  description: string;
   inputWeight: number;
+  //น้ำหนักรถ
   weightOut: number;
   netWeight: number;
+  //หักน้ำหนักน้ำ
   deductWeight: number;
-  money: number;
-  deductMoney: number;
   totalMoney: number;
   averagePrice: number;
   createdBy: string;
@@ -16,5 +16,5 @@ export interface ILineWeighing {
 
 export type ILineWeighingTable = Omit<
   ILineWeighing,
-  'createdBy' | 'deductMoney' | 'money' | 'listWeighing'
+  'createdBy' | 'description'
 >;

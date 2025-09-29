@@ -2,9 +2,16 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import CustomConfirmDialog from '@/components/CustomConfirmDialog';
 import CustomInput from '@/components/CustomInput/CustomInput';
+import { addCustomerAction } from '@/app/action/customer.actions';
+import {
+  AddCustomerForm,
+  AddCustomerSchema,
+  initialFormData,
+} from '@/types/customer.types';
+import { useRouter } from 'next/navigation';
+import { handleServiceResponse } from '@/utils/handleServiceResponse';
 
 interface dialogProps {
   open: boolean;
@@ -15,34 +22,8 @@ interface dialogProps {
   // textSubmit?: string;
 }
 
-// ✅ สร้าง Zod schema
-const AddCustomerSchema = z.object({
-  codeNumber: z.number().min(1),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  cardId: z.number().min(1),
-  document: z.string().min(1),
-  valueXY: z.string().min(1),
-  address: z.string().min(1),
-  phone: z.number().min(1),
-});
-
-// ✅ สร้าง type จาก schema
-type AddCustomerForm = z.infer<typeof AddCustomerSchema>;
-
-// ✅ ค่า default
-const initialFormData: AddCustomerForm = {
-  codeNumber: 0,
-  firstName: '',
-  lastName: '',
-  address: '',
-  cardId: 0,
-  document: '',
-  valueXY: '',
-  phone: 0,
-};
-
 const Dialog = ({ open, onClose }: dialogProps) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -55,7 +36,13 @@ const Dialog = ({ open, onClose }: dialogProps) => {
   });
 
   const onSubmit = async (formData: AddCustomerForm) => {
-    console.log('Submit', formData);
+    const res = await addCustomerAction(formData);
+
+    const ok = handleServiceResponse(res);
+    if (!ok) return; // มี error → หยุด
+
+    console.log('Add success', res.message);
+    onCancel();
   };
 
   const onCancel = () => {
@@ -98,25 +85,6 @@ const Dialog = ({ open, onClose }: dialogProps) => {
           {...register('lastName')}
         />
         <CustomInput
-          label='Address'
-          required
-          error={errors.address?.message}
-          {...register('address')}
-        />
-
-        <CustomInput
-          label='Document'
-          required
-          error={errors.document?.message}
-          {...register('document')}
-        />
-        <CustomInput
-          label='ValueXY'
-          required
-          error={errors.valueXY?.message}
-          {...register('valueXY')}
-        />
-        <CustomInput
           label='Card Id'
           type='number'
           required
@@ -129,6 +97,12 @@ const Dialog = ({ open, onClose }: dialogProps) => {
           required
           error={errors.phone?.message}
           {...register('phone', { valueAsNumber: true })}
+        />
+        <CustomInput
+          label='Car Registration'
+          required
+          error={errors.carRegistration?.message}
+          {...register('carRegistration')}
         />
       </div>
     </CustomConfirmDialog>

@@ -257,10 +257,10 @@ export function CustomTable<T>({
 
   return (
     <div className={`space-y-4 w-full`}>
-      <div className='overflow-x-auto w-full'>
-        <Table className='table-auto'>
+      <div className='overflow-x-auto w-full rounded-xl border bg-card'>
+        <Table className='table-auto '>
           {caption && <TableCaption>{caption}</TableCaption>}
-          <TableHeader className='border-b border-gray-300'>
+          <TableHeader className=''>
             <TableRow>
               <TableHead className='font-bold tracking-wider text-center'>
                 {/* {lang === 'th' ? '' : 'No.'} */}
@@ -280,9 +280,9 @@ export function CustomTable<T>({
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody className='border-b border-gray-300 gap-10'>
+          <TableBody className=' gap-10'>
             {data.map((item, i) => (
-              <TableRow key={i} className='hover:bg-gray-50 border-gray-300'>
+              <TableRow key={i} className='hover:bg-gray-50'>
                 <TableCell className='text-center tracking-wide font-light py-4'>
                   {page * rowsPerPage + i + 1}
                 </TableCell>

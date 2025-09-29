@@ -13,7 +13,6 @@ export async function ensureDefaultUser() {
         password: hashed,
         detailUser: {
           create: {
-            prefix: 'Mr',
             firstName: 'Admin',
             lastName: 'Admin',
             phone: '0000000000',

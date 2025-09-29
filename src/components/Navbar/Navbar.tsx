@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import CustomButton from '../CustomButton';
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,13 +48,20 @@ export default function Navbar() {
         {/* Profile Dropdown */}
         <div className='hidden md:flex space-x-6'>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost' className='rounded-full p-1'>
-                <img
+            <DropdownMenuTrigger asChild className='focus-visible:ring-ring/0'>
+              <Button
+                variant='ghost'
+                className='rounded-full p-1 hover:bg-transparent'
+              >
+                {/* <img
                   src='/profile.jpg'
                   alt='Profile'
                   className='w-9 h-9 rounded-full border'
-                />
+                /> */}
+                <Avatar className='w-9 h-9'>
+                  <AvatarImage src='/profile.jpg' alt='Profile' />
+                  <AvatarFallback>PM</AvatarFallback>
+                </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-40'>
@@ -79,11 +87,15 @@ export default function Navbar() {
       {isOpen && (
         <div className='md:hidden bg-white border-t shadow-sm block px-4 py-2'>
           <div className='block px-4 py-2'>
-            <img
+            {/* <img
               src='/profile.jpg'
               alt='Profile'
               className='w-9 h-9 rounded-full border'
-            />
+            /> */}
+            <Avatar className='w-9 h-9'>
+              <AvatarImage src='/profile.jpg' alt='Profile' />
+              <AvatarFallback>PM</AvatarFallback>
+            </Avatar>
           </div>
           <Link
             href='/admin/dashboard'
