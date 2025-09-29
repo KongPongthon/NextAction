@@ -8,7 +8,22 @@ export async function ensureDefaultUser() {
   if (!existing) {
     const hashed = await bcrypt.hash('a', 10);
     await Prisma.user.create({
-      data: { email, password: hashed },
+      data: {
+        email,
+        password: hashed,
+        detailUser: {
+          create: {
+            prefix: 'Mr',
+            firstName: 'Admin',
+            lastName: 'Admin',
+            phone: '0000000000',
+            status: 'Active',
+            position: 'Admin',
+            role: 'Admin',
+            profilePath: '', // <- ใส่ default ว่างหรือ path ถ้ามี
+          },
+        },
+      },
     });
     console.log(`✅ Created default user: ${email}`);
   } else {

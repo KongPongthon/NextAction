@@ -1,9 +1,10 @@
 'use client';
 import CustomButton from '@/components/CustomButton';
-import { CustomTable } from '@/components/CustomTable';
+import { CustomTable, TableColumn } from '@/components/CustomTable';
 import HeaderTitleContainer from '@/components/HeaderTitleContainer';
 import Paper from '@/components/Paper';
 import { useSetQuery } from '@/hook/useSetQuery';
+import { ILineWeighingTable } from '@/types/lineWeighing.types';
 import { useSearchParams } from 'next/navigation';
 
 const LineWeighing = () => {
@@ -19,6 +20,53 @@ const LineWeighing = () => {
   const onRowsPerPageChange = (nextLimit: number) => {
     setQuery({ limit: nextLimit, page: page }, { replace: true });
   };
+  const columns: TableColumn<ILineWeighingTable>[] = [
+    {
+      key: 'lineType',
+      name: 'เข้า - ออก',
+    },
+    {
+      key: 'inputWeight',
+      name: 'น้ำหนักเข้า',
+    },
+    {
+      key: 'weightOut',
+      name: 'น้ำหนักออก',
+    },
+    {
+      key: 'netWeight',
+      name: 'น้ำหนักสุทธิ',
+    },
+    {
+      key: 'deductWeight',
+      name: 'หักน้ำหนัก',
+    },
+    {
+      key: 'averagePrice',
+      name: 'ราคาเฉลี่ย / หน่วย',
+    },
+    {
+      key: 'totalMoney',
+      name: 'ราคา',
+    },
+    {
+      key: '_id',
+      name: 'จัดการ',
+      type: 'rowActions',
+    },
+  ];
+  const data = [
+    {
+      _id: '1',
+      lineType: 'เข้า',
+      inputWeight: 5000,
+      weightOut: 4960,
+      netWeight: 4960,
+      deductWeight: 40,
+      totalMoney: 9920,
+      averagePrice: 2,
+    },
+  ];
   return (
     <div>
       <HeaderTitleContainer>
@@ -34,8 +82,8 @@ const LineWeighing = () => {
       </HeaderTitleContainer>
       <Paper>
         <CustomTable
-          data={[]}
-          columns={[]}
+          data={data || []}
+          columns={columns || []}
           page={page - 1}
           rowsPerPage={limit}
           onPageChange={onPageChange}

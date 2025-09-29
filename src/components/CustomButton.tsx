@@ -25,6 +25,7 @@ const CustomButton = ({
   disabled = false,
   variant = 'default',
   type = 'button',
+  Icon = null,
 }: CustomButtonProps) => {
   const variantClasses: Record<
     NonNullable<CustomButtonProps['variant']>,
