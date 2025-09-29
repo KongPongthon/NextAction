@@ -15,13 +15,12 @@ datasource db {
 }
 
 model User {
-  id         String       @id @default(uuid())
-  email      String       @unique
-  password   String
-  
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
   // Relations
   detailUser DetailUser[]
-
 }
 
 enum Prefix {
@@ -34,52 +33,26 @@ enum IStatus {
   Inactive
 }
 
-model RoleTypes {
-  id         String       @id @default(uuid())
-  detailUser DetailUser[]
-  role       String       @unique
+enum Role {
+  Admin
+  Manager
+  employee
 }
 
 model DetailUser {
-  id          String     @id @default(uuid())
-  
-  userId      String?
-  prefix      Prefix
-  firstName   String
-  lastName    String
-  phone       Int
-  status      IStatus
-  
+  id String @id @default(uuid())
+
+  userId    String?
+  prefix    Prefix
+  firstName String
+  lastName  String
+  phone     Int
+  status    IStatus
+
   position    String
   profilePath String
   // Relations
-  User        User?      @relation(fields: [userId], references: [id])
-  roleTypesId String?
-  RoleTypes   RoleTypes? @relation(fields: [roleTypesId], references: [id])
+  User        User?  @relation(fields: [userId], references: [id])
+  role        Role
 }
 
-model DetailReview {
-  id          String     @id @default(uuid())
-  dormitoryId String?
-  dormitory   Dormitory? @relation(fields: [dormitoryId], references: [id])
-  star        Int
-  review      String
-}
-model Dormitory{
-  id          String     @id @default(uuid())
-  name        String
-  description String
-  totalUser   Int
-  detailReview DetailReview[]
-  detailDormitory DetailDormitory[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
-
-model DetailDormitory {
-  id          String     @id @default(uuid())
-  totalRooms Int
-  BusyRooms  Int
-  Dormitory  Dormitory? @relation(fields: [dormitoryId], references: [id])
-  dormitoryId String?
-}
