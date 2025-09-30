@@ -15,8 +15,11 @@ import React from 'react';
 import AddDialog from '../_diglog/addDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { addLineWeighingAction } from '@/app/action/lineWeighing.actions';
+import { handleServiceResponse } from '@/utils/handleServiceResponse';
+import { IResponseError } from '@/types/response.types';
 
-const LineWeighing = () => {
+const LineWeighing = ({ data }: { data: ILineWeighingTable[] }) => {
   const setQuery = useSetQuery();
   const searchParams = useSearchParams();
   const page = Math.max(parseInt(searchParams.get('page') || '1', 10), 1); // min 1
@@ -74,23 +77,25 @@ const LineWeighing = () => {
       name: 'ราคา',
     },
     {
-      key: '_id',
+      key: 'id',
       name: 'จัดการ',
       type: 'rowActions',
     },
   ];
-  const data = [
-    {
-      _id: '1',
-      lineType: 'เข้า',
-      inputWeight: 5000,
-      weightOut: 1500,
-      netWeight: 3460,
-      deductWeight: 40,
-      averagePrice: 2,
-      totalMoney: 6920,
-    },
-  ];
+
+  console.log('testData', data);
+
+  const onSubmit = async (data: AddLineWeighingForm) => {
+    console.log(data);
+    try {
+      const res = await addLineWeighingAction(data);
+
+      const ok = handleServiceResponse(res as IResponseError);
+      if (!ok) return;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const openAddDialog = () => setIsOpenAddDialog(!isOpenAddDialog);
   return (
@@ -108,7 +113,7 @@ const LineWeighing = () => {
       </HeaderTitleContainer>
       <Paper>
         <CustomTable
-          data={[]}
+          data={data || []}
           columns={columns || []}
           page={page - 1}
           rowsPerPage={limit}
@@ -120,7 +125,7 @@ const LineWeighing = () => {
       <AddDialog
         open={isOpenAddDialog}
         onClose={openAddDialog}
-        onSubmit={() => {}}
+        onSubmit={onSubmit}
         control={control}
         register={register}
         errors={errors}

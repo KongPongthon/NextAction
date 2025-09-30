@@ -62,16 +62,15 @@ CREATE TABLE "public"."CustomerHistory" (
 -- CreateTable
 CREATE TABLE "public"."LineWeighing" (
     "id" TEXT NOT NULL,
-    "listWeighing" TEXT NOT NULL,
     "inputWeight" DOUBLE PRECISION NOT NULL,
     "weightOut" DOUBLE PRECISION NOT NULL,
     "netWeight" DOUBLE PRECISION NOT NULL,
     "deductWeight" DOUBLE PRECISION NOT NULL,
-    "money" DOUBLE PRECISION NOT NULL,
-    "deductMoney" DOUBLE PRECISION NOT NULL,
     "totalMoney" DOUBLE PRECISION NOT NULL,
     "averagePrice" DOUBLE PRECISION NOT NULL,
     "lineType" "public"."Line" NOT NULL,
+    "description" TEXT NOT NULL,
+    "status" "public"."IStatus" NOT NULL,
     "createdBy" TEXT NOT NULL,
 
     CONSTRAINT "LineWeighing_pkey" PRIMARY KEY ("id")

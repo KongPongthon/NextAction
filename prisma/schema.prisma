@@ -92,16 +92,15 @@ enum Line {
 
 model LineWeighing {
   id           String @id @default(uuid())
-  listWeighing String
   inputWeight  Float
   weightOut    Float
   netWeight    Float
   deductWeight Float
-  money        Float
-  deductMoney  Float
   totalMoney   Float
   averagePrice Float
   lineType     Line
+  description  String
+  status       IStatus
 
   // Relations
   User      DetailUser?           @relation(fields: [createdBy], references: [id])

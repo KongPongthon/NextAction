@@ -49,7 +49,7 @@ const AddDialog = ({
           (err) => console.log('❌ Validation errors:', err)
         )()
       }
-      title={'Add Customer'}
+      title={'Add Line Weighing'}
     >
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
         <Controller
