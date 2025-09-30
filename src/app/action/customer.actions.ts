@@ -2,6 +2,7 @@
 import { verifyToken } from '@/lib/auth';
 import { Prisma } from '@/lib/prisna';
 import { ServiceError } from '@/lib/ServiceErrors';
+import { updateWithHistory } from '@/lib/updateWithHistory';
 import {
   AddCustomerForm,
   ICustomer,
@@ -114,28 +115,25 @@ const updateCustomerAction = async (
 ): Promise<IResponse<{ success: boolean; code: number; message: string }>> => {
   try {
     console.log('updateCustomerAction', formData);
+    const createdById = await verifyToken();
+    const { id } = formData;
 
-    const {
-      id,
-      codeNumber,
-      firstName,
-      lastName,
-      cardId,
-      phone,
-      carRegistration,
-    } = formData;
+    //   prismaModel: keyof typeof Prisma, // เช่น "lineWeighingIn"
+    // historyModel: keyof typeof Prisma, // เช่น "lineWeighingInHistory"
+    // idField: string, // เช่น "id"
+    // idValue: string, // primary key value
+    // newData: Record<string, any>, // ข้อมูลใหม่
+    // userId: string // updatedBy
 
-    await Prisma.customer.update({
-      where: { id },
-      data: {
-        codeNumber,
-        firstName,
-        lastName,
-        cardId,
-        phone,
-        carRegistration,
-      },
-    });
+    await updateWithHistory(
+      'customer', // prismaModel
+      'customerHistory', // historyModel
+      'id', // idField
+      id, // idValue
+      formData, // new data
+      createdById // userId (เอามาจาก session หรือ token ของ user ที่ login อยู่)
+    );
+
     return {
       success: true,
       code: 200,

@@ -257,7 +257,7 @@ export function CustomTable<T>({
 
   return (
     <div className={`space-y-4 w-full`}>
-      <div className='overflow-x-auto w-full rounded-xl border bg-card'>
+      <div className='overflow-x-auto w-full rounded-xl border bg-card p-2'>
         <Table className='table-auto '>
           {caption && <TableCaption>{caption}</TableCaption>}
           <TableHeader className=''>

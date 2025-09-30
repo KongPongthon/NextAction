@@ -110,10 +110,10 @@ export default function Navbar() {
             Customer
           </Link>
           <Link
-            href='/admin/lineweighingin'
+            href='/admin/lineweighing'
             className='block px-4 py-2 hover:underline'
           >
-            LineWeighing
+            Lineweighing
           </Link>
           <div>
             <CustomButton

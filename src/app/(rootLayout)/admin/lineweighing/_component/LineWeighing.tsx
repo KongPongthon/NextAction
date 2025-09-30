@@ -4,8 +4,17 @@ import { CustomTable, TableColumn } from '@/components/CustomTable';
 import HeaderTitleContainer from '@/components/HeaderTitleContainer';
 import Paper from '@/components/Paper';
 import { useSetQuery } from '@/hook/useSetQuery';
-import { ILineWeighingTable } from '@/types/lineWeighing.types';
+import {
+  AddLineWeighingForm,
+  AddLineWeighingSchema,
+  ILineWeighingTable,
+  initialFormData,
+} from '@/types/lineWeighing.types';
 import { useSearchParams } from 'next/navigation';
+import React from 'react';
+import AddDialog from '../_diglog/addDialog';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const LineWeighing = () => {
   const setQuery = useSetQuery();
@@ -20,6 +29,21 @@ const LineWeighing = () => {
   const onRowsPerPageChange = (nextLimit: number) => {
     setQuery({ limit: nextLimit, page: page }, { replace: true });
   };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<AddLineWeighingForm>({
+    resolver: zodResolver(AddLineWeighingSchema), // ✅ ใช้ schema
+    mode: 'onChange',
+    defaultValues: initialFormData,
+  });
+
+  const [isOpenAddDialog, setIsOpenAddDialog] = React.useState(false);
+
   const columns: TableColumn<ILineWeighingTable>[] = [
     {
       key: 'lineType',
@@ -67,6 +91,8 @@ const LineWeighing = () => {
       totalMoney: 6920,
     },
   ];
+
+  const openAddDialog = () => setIsOpenAddDialog(!isOpenAddDialog);
   return (
     <div>
       <HeaderTitleContainer>
@@ -74,7 +100,7 @@ const LineWeighing = () => {
         <div className='md:flex justify-end py-3'>
           <CustomButton
             className='w-full md:max-w-[50px]'
-            // onClick={openAddDialog}
+            onClick={openAddDialog}
           >
             +ADD
           </CustomButton>
@@ -82,7 +108,7 @@ const LineWeighing = () => {
       </HeaderTitleContainer>
       <Paper>
         <CustomTable
-          data={data || []}
+          data={[]}
           columns={columns || []}
           page={page - 1}
           rowsPerPage={limit}
@@ -91,6 +117,16 @@ const LineWeighing = () => {
           actions={[]}
         />
       </Paper>
+      <AddDialog
+        open={isOpenAddDialog}
+        onClose={openAddDialog}
+        onSubmit={() => {}}
+        control={control}
+        register={register}
+        errors={errors}
+        handleSubmit={handleSubmit}
+        reset={reset}
+      />
     </div>
   );
 };
