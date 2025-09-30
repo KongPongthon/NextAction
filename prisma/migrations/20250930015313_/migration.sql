@@ -1,7 +1,4 @@
 -- CreateEnum
-CREATE TYPE "public"."Prefix" AS ENUM ('Mr', 'Mrs');
-
--- CreateEnum
 CREATE TYPE "public"."IStatus" AS ENUM ('Active', 'Inactive');
 
 -- CreateEnum
@@ -22,13 +19,13 @@ CREATE TABLE "public"."User" (
 -- CreateTable
 CREATE TABLE "public"."DetailUser" (
     "id" TEXT NOT NULL,
-    "userId" TEXT,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "status" "public"."IStatus" NOT NULL,
     "position" TEXT NOT NULL,
     "profilePath" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "role" "public"."Role" NOT NULL,
 
     CONSTRAINT "DetailUser_pkey" PRIMARY KEY ("id")
@@ -96,8 +93,11 @@ CREATE TABLE "public"."LineWeighingHistory" (
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "DetailUser_userId_key" ON "public"."DetailUser"("userId");
+
 -- AddForeignKey
-ALTER TABLE "public"."DetailUser" ADD CONSTRAINT "DetailUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."DetailUser" ADD CONSTRAINT "DetailUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Customer" ADD CONSTRAINT "Customer_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "public"."DetailUser"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

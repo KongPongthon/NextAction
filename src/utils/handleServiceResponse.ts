@@ -1,10 +1,7 @@
+import { IResponseError } from '@/types/response.types';
 import { redirect } from 'next/navigation';
 
-export function handleServiceResponse(res: {
-  success: boolean;
-  code: number;
-  message: string;
-}) {
+export function handleServiceResponse(res: IResponseError) {
   if (res.success) {
     return true; // success → caller ทำงานต่อ
   }

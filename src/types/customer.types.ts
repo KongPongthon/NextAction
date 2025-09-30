@@ -2,7 +2,7 @@ import z from 'zod/v3';
 
 // types main
 export interface ICustomer {
-  _id: string;
+  id: string;
   codeNumber: number;
   firstName: string;
   lastName: string;
@@ -27,6 +27,7 @@ export const AddCustomerSchema = z.object({
   cardId: z.number().min(1, { message: 'กรุณากรอกเลขบัตรประชาชน' }),
   phone: z.number().min(1, { message: 'กรุณากรอกเบอร์โทรศัพท์' }),
   carRegistration: z.string().min(1, { message: 'กรุณากรอกทะเบียนรถ' }),
+  id: z.string(),
 });
 
 // ✅ สร้าง type จาก schema
@@ -40,4 +41,5 @@ export const initialFormData: AddCustomerForm = {
   cardId: 0,
   phone: 0,
   carRegistration: '',
+  id: '',
 };

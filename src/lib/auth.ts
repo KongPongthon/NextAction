@@ -55,10 +55,9 @@ export async function verifyToken() {
       detailUser: true,
     },
   });
-
-  if (!user) {
+  if (user && user.detailUser) {
+    return user.detailUser.id;
+  } else {
     throw new ServiceError(404, 'User not found');
   }
-
-  return user.detailUser[0].id as string;
 }

@@ -20,12 +20,7 @@ model User {
   password String
 
   // Relations
-  detailUser DetailUser[]
-}
-
-enum Prefix {
-  Mr
-  Mrs
+  detailUser DetailUser?
 }
 
 enum IStatus {
@@ -40,9 +35,7 @@ enum Role {
 }
 
 model DetailUser {
-  id String @id @default(uuid())
-
-  userId    String?
+  id        String  @id @default(uuid())
   firstName String
   lastName  String
   phone     String
@@ -51,7 +44,8 @@ model DetailUser {
   position    String
   profilePath String
   // Relations
-  User        User?  @relation(fields: [userId], references: [id])
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
   role        Role
 
   Customer        Customer[]

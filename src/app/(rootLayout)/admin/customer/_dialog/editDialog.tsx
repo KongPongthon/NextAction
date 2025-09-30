@@ -1,9 +1,14 @@
-'use client';
 import React from 'react';
 import CustomConfirmDialog from '@/components/CustomConfirmDialog';
 import CustomInput from '@/components/CustomInput/CustomInput';
-import { AddCustomerForm } from '@/types/customer.types';
-import { FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
+import { AddCustomerForm, ICustomer } from '@/types/customer.types';
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormReset,
+  useForm,
+} from 'react-hook-form';
+import { getCustomerByIdAction } from '@/app/action/customer.actions';
 
 interface dialogProps {
   open: boolean;
@@ -12,19 +17,46 @@ interface dialogProps {
   register: UseFormRegister<AddCustomerForm>;
   errors: FieldErrors<AddCustomerForm>;
   handleSubmit: ReturnType<typeof useForm>['handleSubmit'];
+  id: string;
+  reset: UseFormReset<AddCustomerForm>;
 }
 
-const Dialog = ({
+const EditDialog = ({
   open,
   onClose,
   onSubmit,
   register,
   errors,
   handleSubmit,
+  id,
+  reset,
 }: dialogProps) => {
   const onCancel = () => {
     onClose();
     console.log('Cancel');
+  };
+
+  React.useEffect(() => {
+    if (id && open) {
+      getCustomer();
+    }
+  }, [id, open]);
+
+  const getCustomer = async () => {
+    const res = await getCustomerByIdAction(id);
+    console.log('GetData', res);
+    if (res && res?.success) {
+      const customer = res.data as ICustomer; // Type guard
+      reset({
+        codeNumber: customer.codeNumber,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        cardId: customer.cardId,
+        phone: customer.phone,
+        carRegistration: customer.carRegistration,
+        id: customer.id,
+      });
+    }
   };
 
   return (
@@ -85,4 +117,4 @@ const Dialog = ({
   );
 };
 
-export default Dialog;
+export default EditDialog;
